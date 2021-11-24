@@ -44,16 +44,16 @@ if ( ! class_exists( 'WP_REST_API_Log_DB' ) ) {
 		 */
 		public function insert( $args ) {
 
-			$current_user = wp_get_current_user();
+            $current_user = wp_get_current_user();
 
-			$args = wp_parse_args( $args, array(
+            $args                = wp_parse_args( $args, array(
 				'time'                  => current_time( 'mysql' ),
-				'ip_address'            => filter_input( INPUT_SERVER, 'REMOTE_ADDR', FILTER_SANITIZE_STRING ),
+				'ip_address'            => WP_REST_API_Log_Common::filter_server_input( INPUT_SERVER, 'REMOTE_ADDR', FILTER_VALIDATE_IP ),
 				'user'                  => $current_user->user_login,
-				'http_x_forwarded_for'  => filter_input( INPUT_SERVER, 'HTTP_X_FORWARDED_FOR', FILTER_SANITIZE_STRING ),
+				'http_x_forwarded_for'  => WP_REST_API_Log_Common::filter_server_input( INPUT_SERVER, 'HTTP_X_FORWARDED_FOR', FILTER_VALIDATE_IP ),
 				'route'                 => '',
 				'source'                => 'WP REST API',
-				'method'                => filter_input( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING ),
+				'method'                => WP_REST_API_Log_Common::filter_server_input( INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING ),
 				'status'                => 200,
 				'request'               => array(
 					'body'                 => '',
@@ -526,6 +526,6 @@ if ( ! class_exists( 'WP_REST_API_Log_DB' ) ) {
 		}
 
 
-	} // end class
+    } // end class
 
 }

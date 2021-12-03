@@ -54,6 +54,30 @@ if ( ! class_exists( 'WP_REST_API_Log_Common' ) ) {
 			<?php
 		}
 
+		/**
+         * Provides a helper function to work around a known PHP bug in filter_input()
+         * https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=730094
+         *
+		 * @param string $input
+		 * @param string $var_name
+		 * @param string $filter
+		 *
+		 * @return mixed|null
+		 */
+		static public function filter_server_input( string $input, string $var_name, string $filter ) {
+			if ( filter_has_var( $input, $var_name ) ) {
+				$filtered_input = filter_input( $input, $var_name, $filter, FILTER_NULL_ON_FAILURE );
+			} else {
+				if ( isset( $_SERVER[ $var_name ] ) ) {
+					$filtered_input = filter_var( $_SERVER[ $var_name ], $filter, FILTER_NULL_ON_FAILURE );
+				} else {
+					$filtered_input = null;
+				}
+			}
+
+			return $filtered_input;
+		}
+
 
 	} // end class
 
